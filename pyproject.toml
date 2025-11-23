@@ -1,0 +1,152 @@
+[project]
+name = "avito-pr-reviewers"
+version = "0.1.0"
+description = "Тестовое задание для стажёра Backend (осенняя волна 2025) - Сервис назначения ревьюеров для Pull Request’ов"
+authors = [
+    {name = "DiedCloud",email = "fkirill2604@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "fastapi (>=0.121.2,<0.122.0)",
+
+    "pydantic (>=2.12.4,<3.0.0)",
+
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)",
+
+    "sqlalchemy (>=2.0.44,<3.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "alembic (>=1.17.2,<2.0.0)",
+
+    "gunicorn (>=23.0.0,<24.0.0)",
+    "uvicorn (>=0.38.0,<0.39.0)",
+
+    "python-json-logger (>=4.0.0,<5.0.0)",
+    "colorlog (>=6.10.1,<7.0.0)",
+
+    "pyjwt (>=2.10.1,<3.0.0)",
+    "cryptography (>=46.0.3,<47.0.0)",
+    "passlib[argon2] (>=1.7.4,<2.0.0)",
+    "python-multipart (>=0.0.20,<0.0.21)",
+
+    "pytest (>=9.0.1,<10.0.0)",
+    "coverage (>=7.12.0,<8.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.14.5"
+mypy = "^1.18.2"
+isort = "^7.0.0"
+types-passlib = "^1.7.7.20250602"
+bandit = {extras = ["sarif"], version = "^1.9.1"}
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+lint.select = [
+    # A set of chosen linter rules is specified here.
+    # See https://beta.ruff.rs/docs/rules/ for more info.
+    # pyflakes (simple obvious errors)
+    "F",
+    # pycodestyle (style linter, pep8, black-compatible)
+    "E",
+    "W",
+    # pep8-naming (style linter, pep8 naming conventions)
+    "N",
+    # isort (imports sorting)
+    "I",
+    # mccabe (cyclomatic complexity analyzer to prevent overcomplicated functions)
+    "C90",
+    # pyupgrade (possible syntax upgrades checker)
+    "UP",
+    # eradicate (commented-out code finder for it to be removed)
+    "ERA",
+    # flake8-2020 (errors related to sys.version or sys.version_info, just in case)
+    "YTT",
+    # flake8-annotations (enforces presense of type hints so the codebase is fully typed)
+    # "ANN", # too burdensome
+    # flake8-async (async-related mistakes/errors)
+    "ASYNC",
+    # flake8-builtins (checks builtin names shadowing, it's better not to)
+    "A",
+    # flake8-commas (to enforce trailing commas)
+    "COM",
+    # flake8-future-annotations (to ensure enabling modern (3.7+) postponed evaluation of type hints)
+    "FA",
+    # flake8-import-conventions (to enforce standartized import aliases like "import pandas as pd")
+    "ICN",
+    # flake8-no-pep420 (to enforce the presence of __init__.py in packages)
+    "INP",
+    # flake8-print (to disallow print statements)
+    "T20",
+    # flake8-pytest-style (to improve pytest-related style consistency)
+    "PT",
+    # flake8-quotes (to enforce quotes style)
+    "Q",
+    # flake8-return (checks mistakes related to return values)
+    "RET",
+    # flake8-use-pathlib (to enforce pathlib usage instead of os.path)
+    "PTH",
+    # pandas-vet (pandas-related advices)
+    "PD",
+    # tryceratops (try/except-related advices)
+    "TRY",
+    # ruff-specific advices
+    "RUF",
+]
+lint.ignore = [
+    "COM812", # The following rules may cause conflicts when used with the formatter: `COM812`.
+    "E501",   # allow lines longer than 80 symbols (up to 120)
+    "INP001", # Add an `__init__.py`
+    "RUF001", # String contains ambiguous `о` (CYRILLIC SMALL LETTER O). Did you mean `o` (LATIN SMALL LETTER O)?
+    "RUF002", # Docstring contains ambiguous `В` (CYRILLIC CAPITAL LETTER VE). Did you mean `B` (LATIN CAPITAL LETTER B)
+    "RUF003", # Comment contains ambiguous `с` (CYRILLIC SMALL LETTER ES). Did you mean `c` (LATIN SMALL LETTER C)
+    "PTH123", # `open()` should be replaced by `Path.open()` to simplify code for non-Python programmers
+    "PTH118", # `os.path.join()` should be replaced by `Path` with the ` / ` operator
+    "TRY003", # Specifying long exception messages
+]
+lint.unfixable = [
+    "ERA001", # prohibit "auto-fix" (=remove) commented-out code
+]
+
+[lint.mccabe]
+max-complexity = 7
+
+
+[tool.mypy]
+python_version = "3.13"
+explicit_package_bases = true
+plugins = ["pydantic.mypy"]
+
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+indent = "    "
+combine_as_imports = false
+ensure_newline_before_comments = true
+lines_after_imports = 2
+order_by_type = true
+case_sensitive = false
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+order-by-type = true
+combine-as-imports = false
+split-on-trailing-comma = true
+lines-between-types = 0
+no-lines-before = []
+from-first = false
+case-sensitive = false
