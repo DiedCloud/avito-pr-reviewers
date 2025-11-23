@@ -1,17 +1,15 @@
-from src.controller.schemas.pull_request import PullRequestShort, PullRequest as PullRequestDTO
-from src.controller.schemas.team import Team as TeamDTO, TeamMember
+from src.controller.schemas.pull_request import PullRequest as PullRequestDTO
+from src.controller.schemas.pull_request import PullRequestShort
+from src.controller.schemas.team import Team as TeamDTO
+from src.controller.schemas.team import TeamMember
 from src.controller.schemas.user import User as UserDTO
-from src.integration.repository.entity import Team, User, PullRequest
+from src.integration.repository.entity import PullRequest, Team, User
 
 
-def map_team(team: Team | None) -> TeamDTO | None:
-    return (
-        TeamDTO(
-            team_name=team.name,
-            members=list(map(map_team_member, team.members)),
-        )
-        if team
-        else None
+def map_team(team: Team) -> TeamDTO:
+    return TeamDTO(
+        team_name=team.name,
+        members=list(map(map_team_member, team.members)),
     )
 
 
@@ -26,6 +24,7 @@ def map_team_member(team_member: User | None) -> TeamMember | None:
         else None
     )
 
+
 def map_user(user: User | None) -> UserDTO | None:
     return (
         UserDTO(
@@ -38,7 +37,8 @@ def map_user(user: User | None) -> UserDTO | None:
         else None
     )
 
-def map_pr_short(pr: PullRequest) -> PullRequestShort:
+
+def map_pr_short(pr: PullRequest) -> PullRequestShort | None:
     return (
         PullRequestShort(
             pull_request_id=f"pr-{pr.id}",
@@ -51,7 +51,7 @@ def map_pr_short(pr: PullRequest) -> PullRequestShort:
     )
 
 
-def map_pr(pr: PullRequest) -> PullRequestDTO:
+def map_pr(pr: PullRequest) -> PullRequestDTO | None:
     return (
         PullRequestDTO(
             pull_request_id=f"pr-{pr.id}",

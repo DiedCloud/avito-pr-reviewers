@@ -1,20 +1,21 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.responses import JSONResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.di_container import di
 from src.controller.schemas.error_response import ErrorResponse
 from src.controller.schemas.mapper import map_pr
 from src.controller.schemas.pull_request import (
-    PullRequestCreateResponse,
     PullRequestCreateRequest,
+    PullRequestCreateResponse,
     PullRequestMergeRequest,
-    PullRequestReassignResponse,
     PullRequestReassignRequest,
+    PullRequestReassignResponse,
     str_to_int_pr_id,
 )
 from src.controller.schemas.user import str_to_int_user_id
 from src.service.pr_service import create_pr, merge_pr, reassign_reviewers
+
 
 pr_router = APIRouter(prefix="/pullRequest", tags=["PullRequests"])
 
@@ -37,10 +38,7 @@ async def pull_request_create(
     author_id = str_to_int_user_id(payload.author_id)
 
     pr = await create_pr(pr_id, payload.pull_request_name, author_id, session)
-    return JSONResponse(
-        status_code=201,
-        content=PullRequestCreateResponse(pr=map_pr(pr))
-    )
+    return JSONResponse(status_code=201, content=PullRequestCreateResponse(pr=map_pr(pr)))
 
 
 @pr_router.post(

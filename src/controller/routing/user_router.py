@@ -1,13 +1,17 @@
-from fastapi import APIRouter, Depends
-from fastapi import Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.di_container import di
 from src.controller.schemas.error_response import ErrorResponse
-from src.controller.schemas.mapper import map_user, map_pr_short
-from src.controller.schemas.user import UsersGetReviewResponse, UsersSetIsActiveResponse, UsersSetIsActiveRequest, \
-    str_to_int_user_id
-from src.service.user_service import set_is_active, get_reviews
+from src.controller.schemas.mapper import map_pr_short, map_user
+from src.controller.schemas.user import (
+    UsersGetReviewResponse,
+    UsersSetIsActiveRequest,
+    UsersSetIsActiveResponse,
+    str_to_int_user_id,
+)
+from src.service.user_service import get_reviews, set_is_active
+
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -25,9 +29,9 @@ async def user_get_review(
     user_id: str = Query(description="Идентификатор пользователя", alias="user_id"),
     session: AsyncSession = Depends(di.get_pg_session),
 ) -> UsersGetReviewResponse:
-    user_id = str_to_int_user_id(user_id)
+    validated_user_id = str_to_int_user_id(user_id)
 
-    prs = await get_reviews(user_id, session)
+    prs = await get_reviews(validated_user_id, session)
 
     return UsersGetReviewResponse(
         user_id=user_id,

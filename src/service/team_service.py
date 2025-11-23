@@ -20,11 +20,10 @@ async def create_team(team_name: str, team_members: list[TeamMember], session: A
 
     team_entity = await team_repo.create(team_name)
 
-    members = [
+    create_user_tasks = [
         user_repo.create(str_to_int_user_id(u.user_id), u.username, u.is_active, team_name) for u in team_members
     ]
-    members = await asyncio.gather(*members)
-    team_entity.members = members
+    team_entity.members = await asyncio.gather(*create_user_tasks)
 
     session.add(team_entity)  # todo ?
     await session.commit()

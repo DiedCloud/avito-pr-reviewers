@@ -3,11 +3,11 @@ from typing import Annotated
 
 from fastapi import Depends
 from sqlalchemy import select, text
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.di_container import di
-from src.integration.repository.entity import PullRequest, User, PRStatus, pr_reviewers
+from src.integration.repository.entity import PRStatus, PullRequest, User, pr_reviewers
 from src.service.generic.logger import logger
 
 

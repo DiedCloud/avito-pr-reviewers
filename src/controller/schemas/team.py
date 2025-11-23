@@ -1,4 +1,4 @@
-from pydantic import StrictStr, StrictBool
+from pydantic import StrictBool, StrictStr
 
 from src.controller.schemas.base import DatetimeBaseModel
 

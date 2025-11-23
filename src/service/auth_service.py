@@ -1,13 +1,12 @@
 from datetime import UTC, datetime, timedelta
-from typing import Optional
 
 import jwt
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
-from src.integration.repository.entity import Client
 from src.integration.repository.auth_repository import AuthRepository
+from src.integration.repository.entity import Client
 
 
 ALGORITHM = "HS256"
@@ -25,7 +24,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
     now = datetime.now(UTC)
     if expires_delta is None:
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -38,7 +37,7 @@ def create_access_token(subject: str, expires_delta: Optional[timedelta] = None)
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_user_id_from_token(token) -> Optional[str]:
+def get_user_id_from_token(token) -> str | None:
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     return payload.get("sub")
 
@@ -51,9 +50,9 @@ async def create_user(session: AsyncSession, login: str, password: str) -> Clien
     return user
 
 
-async def get_user_by_id(session: AsyncSession, user_id: int) -> Optional[Client]:
+async def get_user_by_id(session: AsyncSession, user_id: int) -> Client | None:
     return await AuthRepository(session).get_user_by_id(user_id)
 
 
-async def get_user_by_login(session: AsyncSession, login: str) -> Optional[Client]:
+async def get_user_by_login(session: AsyncSession, login: str) -> Client | None:
     return await AuthRepository(session).get_user_by_login(login)

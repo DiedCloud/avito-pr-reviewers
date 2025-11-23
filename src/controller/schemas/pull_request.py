@@ -1,10 +1,9 @@
 import re
 from datetime import datetime
 from enum import StrEnum
-from typing import List
 
 from fastapi import HTTPException
-from pydantic import StrictStr, Field
+from pydantic import Field, StrictStr
 
 from src.controller.schemas.base import DatetimeBaseModel
 
@@ -19,7 +18,7 @@ class PullRequest(DatetimeBaseModel):
     pull_request_name: StrictStr
     author_id: StrictStr
     status: PRStatus
-    assigned_reviewers: List[StrictStr] = Field(description="user_id назначенных ревьюверов (0..2)", max_length=2)
+    assigned_reviewers: list[str] = Field(description="user_id назначенных ревьюверов (0..2)", max_length=2)
     created_at: datetime | None = Field(default=None, alias="createdAt")
     merged_at: datetime | None = Field(default=None, alias="mergedAt")
 
@@ -56,6 +55,6 @@ class PullRequestReassignResponse(DatetimeBaseModel):
 
 
 def str_to_int_pr_id(pr_id: str) -> int:
-    if not re.match("^pr-\d+$", pr_id):
+    if not re.match(r"^pr-\d+$", pr_id):
         raise HTTPException(status_code=422, detail="Неверный формат pull_request_id")
     return int(pr_id[3:])

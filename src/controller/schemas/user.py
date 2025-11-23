@@ -29,6 +29,6 @@ class UsersSetIsActiveResponse(DatetimeBaseModel):
 
 
 def str_to_int_user_id(user_id: str) -> int:
-    if not re.match("^u\d+$", user_id):
+    if not re.match(r"^u\d+$", user_id):
         raise HTTPException(status_code=422, detail="Неверный формат user_id")
     return int(user_id[1:])

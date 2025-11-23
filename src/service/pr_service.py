@@ -1,10 +1,9 @@
-from datetime import datetime, UTC
-from typing import Tuple
+from datetime import UTC, datetime
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.integration.repository.entity import PullRequest, PRStatus
+from src.integration.repository.entity import PRStatus, PullRequest
 from src.integration.repository.pr_repository import PullRequestRepository
 from src.integration.repository.user_repository import UserRepository
 
@@ -48,7 +47,7 @@ async def merge_pr(pr_id: int, session: AsyncSession) -> PullRequest:
     return pr
 
 
-async def reassign_reviewers(pr_id: int, old_user_id: int, session: AsyncSession) -> Tuple[PullRequest, int]:
+async def reassign_reviewers(pr_id: int, old_user_id: int, session: AsyncSession) -> tuple[PullRequest, int]:
     pr_repo = PullRequestRepository(session)
     user_repo = UserRepository(session)
 

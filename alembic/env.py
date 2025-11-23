@@ -8,7 +8,9 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from alembic import context
 from src.integration.db_connection_provider import PGConnectionProvider
 from src.integration.repository.base import Base
-from src.integration.repository.entity import *
+
+# Importing all entity models for generating migrations
+from src.integration.repository.entity import *  # noqa: F403
 
 
 # this is the Alembic Config object, which provides
