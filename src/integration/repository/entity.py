@@ -76,13 +76,9 @@ class PullRequest(Base):
         SAEnum(PRStatus, native_enum=True), nullable=False, server_default=PRStatus.OPEN
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now(), server_onupdate=func.now()
-    )
+    merged_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    author_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True
-    )
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     author: Mapped["User"] = relationship("User", back_populates="created_prs", lazy="joined")
 
     assigned_reviewers: Mapped[list["User"]] = relationship(

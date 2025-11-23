@@ -1,7 +1,9 @@
+import re
 from datetime import datetime
 from enum import StrEnum
 from typing import List
 
+from fastapi import HTTPException
 from pydantic import StrictStr, Field
 
 from src.controller.schemas.base import DatetimeBaseModel
@@ -51,3 +53,9 @@ class PullRequestReassignRequest(DatetimeBaseModel):
 class PullRequestReassignResponse(DatetimeBaseModel):
     pr: PullRequest
     replaced_by: StrictStr = Field(description="user_id нового ревьювера")
+
+
+def str_to_int_pr_id(pr_id: str) -> int:
+    if not re.match("^pr-\d+$", pr_id):
+        raise HTTPException(status_code=422, detail="Неверный формат pull_request_id")
+    return int(pr_id[3:])

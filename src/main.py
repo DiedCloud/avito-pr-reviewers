@@ -7,6 +7,9 @@ from starlette.middleware.cors import CORSMiddleware
 from src.common.di_container import di
 from src.config import settings
 from src.controller.routing.auth import auth_router
+from src.controller.routing.pr_router import pr_router
+from src.controller.routing.team_router import teams_router
+from src.controller.routing.user_router import user_router
 from src.integration.db_connection_provider import PGConnectionProvider
 from src.service.generic.auth_middleware import JWTAuthMiddleware
 from src.service.generic.logger import logger
@@ -28,6 +31,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(pr_router)
+app.include_router(teams_router)
+app.include_router(user_router)
 
 
 if settings.AUTH_ENABLED:

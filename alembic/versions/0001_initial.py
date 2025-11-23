@@ -39,7 +39,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.Column('status', sa.Enum('OPEN', 'MERGED', name='prstatus'), server_default='OPEN', nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
+    sa.Column('merged_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('author_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['author_id'], ['users.id'], name=op.f('pull_requests_author_id_fkey'), ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id', name=op.f('pull_requests_pkey'))

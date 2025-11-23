@@ -1,3 +1,6 @@
+import re
+
+from fastapi import HTTPException
 from pydantic import StrictBool, StrictStr
 
 from src.controller.schemas.base import DatetimeBaseModel
@@ -23,3 +26,9 @@ class UsersSetIsActiveRequest(DatetimeBaseModel):
 
 class UsersSetIsActiveResponse(DatetimeBaseModel):
     user: User | None = None
+
+
+def str_to_int_user_id(user_id: str) -> int:
+    if not re.match("^u\d+$", user_id):
+        raise HTTPException(status_code=422, detail="Неверный формат user_id")
+    return int(user_id[1:])
