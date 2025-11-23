@@ -14,6 +14,7 @@ class _Settings(BaseSettings):
     # endregion
 
     # region other
+    AUTH_ENABLED: bool
     JWT_SECRET: str
     LOG_LOCATION: str
     DEBUG: bool

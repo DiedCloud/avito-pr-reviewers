@@ -7,6 +7,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.integration.repository.base import Base
 
 
+class Client(Base):
+    __tablename__ = "clients"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    login: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    def __repr__(self) -> str:
+        return f"<Client(id={self.id} login={self.login!r})>"
+
+
 pr_reviewers = Table(
     "pr_reviewers",
     Base.metadata,
