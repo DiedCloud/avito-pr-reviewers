@@ -47,3 +47,8 @@ class UserRepository:
         logger.debug(q)
         res = await self.session.execute(q)
         return res.scalars().all()
+
+    async def get_count(self):
+        q = select(func.count()).select_from(User)
+        result = await self.session.execute(q)
+        return result.scalar_one()

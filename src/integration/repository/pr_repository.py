@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import Depends
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -49,3 +49,18 @@ class PullRequestRepository:
         values = [{"pr_id": pr_id, "user_id": u.id} for u in users]
         q = insert(pr_reviewers).values(values).on_conflict_do_nothing()
         return await self.session.execute(q)
+
+    async def get_count(self):
+        q = select(func.count()).select_from(PullRequest)
+        result = await self.session.execute(q)
+        return result.scalar_one()
+
+    async def get_reviews_count(self):
+        q = select(func.count()).select_from(pr_reviewers)
+        result = await self.session.execute(q)
+        return result.scalar_one()
+
+    async def get_prs_count_per_user(self) -> dict[int, int]:
+        stmt = select(pr_reviewers.c.user_id, func.count(pr_reviewers.c.pr_id)).group_by(pr_reviewers.c.user_id)
+        result = await self.session.execute(stmt)
+        return {user: count for user, count in result.all()}

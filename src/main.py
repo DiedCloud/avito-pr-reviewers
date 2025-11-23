@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, status
+from fastapi import Depends, FastAPI, status
 from fastapi.responses import RedirectResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.cors import CORSMiddleware
 
 from src.common.di_container import di
@@ -10,9 +11,11 @@ from src.controller.routing.auth import auth_router
 from src.controller.routing.pr_router import pr_router
 from src.controller.routing.team_router import teams_router
 from src.controller.routing.user_router import user_router
+from src.controller.schemas.stats import StatsResponse
 from src.integration.db_connection_provider import PGConnectionProvider
 from src.service.generic.auth_middleware import JWTAuthMiddleware
 from src.service.generic.logger import logger
+from src.service.stats_service import get_get_stats
 
 
 @asynccontextmanager
@@ -43,12 +46,17 @@ if settings.AUTH_ENABLED:
 
 
 @app.get("/", include_in_schema=False)
-def redirect_to_redoc() -> RedirectResponse:
+async def redirect_to_redoc() -> RedirectResponse:
     """Redirect to ReDoc"""
     return RedirectResponse(url="/redoc", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/healthcheck")
-def healthcheck() -> dict[str, str]:
+async def healthcheck() -> dict[str, str]:
     """Health check endpoint"""
     return {"status": "ok"}
+
+
+@app.get("/stats")
+async def stats(session: AsyncSession = Depends(di.get_pg_session)) -> StatsResponse:
+    return await get_get_stats(session)
