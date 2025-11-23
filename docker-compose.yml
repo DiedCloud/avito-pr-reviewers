@@ -43,6 +43,7 @@ services:
       PG_DATABASE: ${PG_DATABASE}
       PG_POOL_SIZE: ${PG_POOL_SIZE}
 
+      AUTH_ENABLED: ${AUTH_ENABLED}
       LOG_LOCATION: ${LOG_LOCATION}
       DEBUG: ${DEBUG}
       APP_PORT: ${APP_PORT}

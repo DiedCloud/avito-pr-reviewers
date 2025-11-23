@@ -7,13 +7,14 @@ from src.integration.repository.user_repository import UserRepository
 
 
 async def get_reviews(user_id: int, session: AsyncSession) -> list[PullRequest]:
-    user_repo = PullRequestRepository(session)
+    user_repo = UserRepository(session)
+    pr_repo = PullRequestRepository(session)
 
     user = await user_repo.get_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
 
-    return list(await user_repo.get_reviews(user_id))
+    return list(await pr_repo.get_reviews(user_id))
 
 
 async def set_is_active(user_id: int, is_active: bool, session: AsyncSession) -> User:

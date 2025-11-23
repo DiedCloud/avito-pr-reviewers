@@ -44,6 +44,8 @@ class PullRequestRepository:
         return await self.session.execute(q, {"pr_id": pr_id, "old_user_id": old_user_id, "new_user_id": new_user_id})
 
     async def add_reviewers(self, pr_id: int, users: Sequence[User]):
+        if not users:
+            return None
         values = [{"pr_id": pr_id, "user_id": u.id} for u in users]
         q = insert(pr_reviewers).values(values).on_conflict_do_nothing()
         return await self.session.execute(q)

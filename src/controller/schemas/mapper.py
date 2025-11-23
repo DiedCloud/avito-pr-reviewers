@@ -56,7 +56,7 @@ def map_pr(pr: PullRequest) -> PullRequestDTO | None:
         PullRequestDTO(
             pull_request_id=f"pr-{pr.id}",
             pull_request_name=pr.name,
-            author_id=pr.author_id,
+            author_id=f"u{pr.author_id}",
             status=pr.status,
             assigned_reviewers=list(map(lambda u: f"u{u.id}", pr.assigned_reviewers)),
             createdAt=pr.created_at,

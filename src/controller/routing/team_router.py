@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Query
-from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.di_container import di
@@ -14,6 +13,7 @@ teams_router = APIRouter(prefix="/team", tags=["Teams"])
 
 @teams_router.post(
     "/add",
+    status_code=201,
     responses={
         201: {"model": TeamAddResponse, "description": "Команда создана"},
         400: {"model": ErrorResponse, "description": "Команда уже существует"},
@@ -23,9 +23,9 @@ teams_router = APIRouter(prefix="/team", tags=["Teams"])
 async def team_add_post(
     team: Team,
     session: AsyncSession = Depends(di.get_pg_session),
-):
+) -> TeamAddResponse:
     team_entity = await create_team(team.team_name, team.members, session)
-    return JSONResponse(status_code=201, content=TeamAddResponse(team=map_team(team_entity)))
+    return TeamAddResponse(team=map_team(team_entity))
 
 
 @teams_router.get(

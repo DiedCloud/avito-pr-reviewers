@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.di_container import di
@@ -22,6 +21,7 @@ pr_router = APIRouter(prefix="/pullRequest", tags=["PullRequests"])
 
 @pr_router.post(
     "/create",
+    status_code=201,
     responses={
         201: {"model": PullRequestCreateResponse, "description": "PR создан"},
         404: {"model": ErrorResponse, "description": "Автор/команда не найдены"},
@@ -33,12 +33,12 @@ pr_router = APIRouter(prefix="/pullRequest", tags=["PullRequests"])
 async def pull_request_create(
     payload: PullRequestCreateRequest,
     session: AsyncSession = Depends(di.get_pg_session),
-):
+) -> PullRequestCreateResponse:
     pr_id = str_to_int_pr_id(payload.pull_request_id)
     author_id = str_to_int_user_id(payload.author_id)
 
     pr = await create_pr(pr_id, payload.pull_request_name, author_id, session)
-    return JSONResponse(status_code=201, content=PullRequestCreateResponse(pr=map_pr(pr)))
+    return PullRequestCreateResponse(pr=map_pr(pr))
 
 
 @pr_router.post(
@@ -78,4 +78,4 @@ async def pull_request_reassign(
     old_user_id = str_to_int_user_id(payload.old_user_id)
 
     pr, replaced_by = await reassign_reviewers(pr_id, old_user_id, session)
-    return PullRequestReassignResponse(pr=map_pr(pr), replaced_by=replaced_by)
+    return PullRequestReassignResponse(pr=map_pr(pr), replaced_by=f"u{replaced_by}")

@@ -1,11 +1,9 @@
-import asyncio
-
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.controller.schemas.team import TeamMember
 from src.controller.schemas.user import str_to_int_user_id
-from src.integration.repository.entity import Team
+from src.integration.repository.entity import Team, User
 from src.integration.repository.team_repository import TeamRepository
 from src.integration.repository.user_repository import UserRepository
 
@@ -20,12 +18,12 @@ async def create_team(team_name: str, team_members: list[TeamMember], session: A
 
     team_entity = await team_repo.create(team_name)
 
-    create_user_tasks = [
-        user_repo.create(str_to_int_user_id(u.user_id), u.username, u.is_active, team_name) for u in team_members
+    users = [
+        User(id=str_to_int_user_id(u.user_id), username=u.username, is_active=u.is_active, team_name=team_name)
+        for u in team_members
     ]
-    team_entity.members = await asyncio.gather(*create_user_tasks)
+    await user_repo.create_many(users)
 
-    session.add(team_entity)  # todo ?
     await session.commit()
     await session.refresh(team_entity)
     return team_entity
