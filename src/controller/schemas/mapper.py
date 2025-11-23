@@ -43,7 +43,7 @@ def map_pr_short(pr: PullRequest) -> PullRequestShort | None:
         PullRequestShort(
             pull_request_id=f"pr-{pr.id}",
             pull_request_name=pr.name,
-            author_id=pr.author_id,
+            author_id=f"u{pr.author_id}",
             status=pr.status,
         )
         if pr
