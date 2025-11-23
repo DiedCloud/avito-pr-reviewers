@@ -114,6 +114,9 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: mkdir
+        run: mkdir -p results
+
       - name: Run Snyk (dependencies)
         uses: snyk/actions/python@master
         continue-on-error: true   # чтобы SARIF загрузился даже при найденных уязвимостях
